@@ -27,12 +27,3 @@ class SimpleMacro(SAPMacro):
 def simple_macro_type(signature, insertion):
     return lambda: SimpleMacro(signature, insertion)
 
-def load_extension(json_data: str):
-    macros = json.loads(json_data)
-    macro_types = []
-
-    for signature in macros:
-        insertion = macros[signature]
-
-        macro_types.append(simple_macro_type(signature, insertion))
-    return macro_types
