@@ -1,0 +1,42 @@
+{
+    "movim int label":[
+        "push r1",
+        "movir $int r1",
+        "movrm r1 $label",
+        "pop r1"
+    ],
+    "movmm label1 label2":[
+        "push r1",
+        "movmr $label1 r1",
+        "movrm r1 $label2",
+        "pop r1"
+    ],
+    "addim int label":[
+        "push r1",
+        "movmr $label r1",
+        "addir $int r1",
+        "movrm r1 $label",
+        "pop r1"
+    ],
+    "addrx reg1 reg2":[
+        "push r1",
+        "movxr $reg2 r1",
+        "addrr $reg1 r1",
+        "movrx r1 $reg2",
+        "pop r1"
+    ],
+    "subim int label":[
+        "push r1",
+        "movmr $label r1",
+        "subir $int r1",
+        "movrm r1 $label",
+        "pop r1"
+    ],
+    "subrx reg1 reg2":[
+        "push r1",
+        "movxr $reg2 r1",
+        "subrr $reg1 r1",
+        "movrx r1 $reg2",
+        "pop r1"
+    ]
+}

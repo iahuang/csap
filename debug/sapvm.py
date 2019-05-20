@@ -402,8 +402,3 @@ class VM:
         while 1:
             self.run_step()
 
-
-vm = VM(1000)
-vm.load_prg(
-    "/Users/ianhuang/Documents/simple-assembly-programming/x86em/out.expanded.bin")
-vm.run()
