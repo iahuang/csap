@@ -92,11 +92,13 @@ class Instruction(Argumented):
 
 class Token:
     def __init__(self, text):
+        self.text = text
         if re.match("r\d+", text):
             self.type = "register"
+            self.reg_num = int(self.text.lstrip("r"))
         elif re.match("\d+", text):
             self.type = "constant"
         else:
-            self.type = "computed"
+            self.type = "memory"
 
 

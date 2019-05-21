@@ -5,7 +5,7 @@ char chr = 2;
 int integer = 10;
 long lng = 12;
 long long lnglng = 34;
-bool bl = false;
+bool bl = true;
 int* int_ptr;
 long* long_ptr;
 
