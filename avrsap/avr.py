@@ -1,5 +1,5 @@
 import re
-from ..preprocessing.util import rcut, lcut, parse_dsv
+from .util import rcut, lcut, parse_dsv
 
 def split_spaces(text):
     return parse_dsv(text, [" "])[::2]
@@ -7,13 +7,13 @@ def split_spaces(text):
 def detect_linetype(line):
     line = line.strip()
 
-    if re.match("\w+ ?="): # Something like "__SP_H__ = 0x3e"
+    if re.match("\w+ ?=", line): # Something like "__SP_H__ = 0x3e"
         return "reg-assign"
-    elif re.match("\.\w+"): # Something like ".global main"
+    elif re.match("\.\w+", line): # Something like ".global main"
         return "directive"
-    elif re.match(":$"): # Something like "main:"
+    elif re.search(":$", line): # Something like "main:"
         return "label"
-    elif re.match("\/\*.+\*\/"): # Something like "/* frame size = 0 */"
+    elif re.match("\/\*.+\*\/", line): # Something like "/* frame size = 0 */"
         return "comment"
     elif line == "": # Blank line
         return "null"
@@ -23,18 +23,19 @@ def detect_linetype(line):
 def parse_avr(asm):
     lines = []
 
-    for line in asm.split("\n"):
-        ltype = detect_linetype(line)
+    for linetext in asm.split("\n"):
+        linetext = linetext.strip()
+        ltype = detect_linetype(linetext)
         line = None
         if ltype == "directive":
-            line = Directive(line)
+            line = Directive(linetext)
         elif ltype == "label":
-            line = Label(line)
+            line = Label(linetext)
         elif ltype == "comment":
-            line = Comment(line)
+            line = Comment(linetext)
         elif ltype == "instruction":
-            line = Instruction(line)
-
+            line = Instruction(linetext)
+        
         if line:
             lines.append(line)
     
@@ -56,12 +57,22 @@ class Label:
 class Comment:
     def __init__(self, line):
         self.raw = line
-        self.text = lcut(rcut(line, "/*"), "/*")
+        self.text = rcut(lcut(line, "/*"), "*/")
 
 class Instruction:
     def __init__(self, line):
         self.raw = line
         parts = split_spaces(line)
         self.mne = parts[0]
-        self.args = parts[1:]
+        self.args = list([Token(arg) for arg in parts[1:] ])
+
+class Token:
+    def __init__(self, text):
+        if re.match("r\d+", text):
+            self.type = "register"
+        elif re.match("\d+", text):
+            self.type = "constant"
+        else:
+            self.type = "computed"
+
 

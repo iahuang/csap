@@ -22,6 +22,7 @@ def compile(prg, *args):
         exit()
     
     with open("tmp.s") as fl:
+        os.chdir(cwd)
         return fl.read()
     
-    os.chdir(cwd)
+    

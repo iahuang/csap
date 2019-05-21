@@ -1,0 +1,7 @@
+main:
+    ; [GCC]  prologue: function 
+    ; [GCC]  frame size = 0 
+    ; [GCC]  stack size = 0 
+    ; [GCC]  epilogue start 
+b:
+a:
