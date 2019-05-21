@@ -1,6 +1,16 @@
 import re
 from .util import rcut, lcut, parse_dsv
 
+class meta: # Defines important constants for AVR
+    wordbits = 16
+    wordsize = 2
+    intbits = 32
+    intsize = 4
+    longbits = 32
+    longsize = 4
+    longlongbits = 64
+    longlongsize = 8
+
 def split_spaces(text):
     return parse_dsv(text, [" "])[::2]
 
@@ -63,16 +73,22 @@ class Comment:
         self.raw = line
         self.text = rcut(lcut(line, "/*"), "*/")
 
-class Instruction:
+class Argumented:
     def __init__(self, line):
         self.name = line.split(" ")[0]
         self.args = parse_dsv(lcut(line, self.name+" "), [","])[::2]
         self.args = list([arg.strip() for arg in self.args])
 
-class Directive(Instruction):
+class Directive(Argumented):
     def __init__(self, line):
         self.raw = line
         super().__init__(line.lstrip("."))
+
+class Instruction(Argumented):
+    def __init__(self, line):
+        self.raw = line
+        super().__init__(line)
+        self.args = list([Token(arg) for arg in self.args])
 
 class Token:
     def __init__(self, text):

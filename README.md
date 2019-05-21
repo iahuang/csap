@@ -26,4 +26,8 @@ $ python3 csap.py myprogram.c
 
 ## Libraries and standard IO
 
-csap does not support linking libraries for either C++ and C. This includes standard libraries such as `iostream` and `stdio.h` For the moment, you can access functions such as printing by including `csap/lib/saplib.h` in your source file. 
+csap does not support linking libraries for either C++ and C. This includes standard libraries such as `iostream` and `stdio.h` For the moment, you can access functions such as printing by including `csap/lib/saplib.h` in your source file.
+
+### Known exceptions to this rule (C)
+
+- stdbool.h

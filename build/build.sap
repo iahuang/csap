@@ -1,9 +1,33 @@
-sum:
-    .allocate #2
 main:
     ; [GCC]  prologue: function 
     ; [GCC]  frame size = 0 
     ; [GCC]  stack size = 0 
     ; [GCC]  epilogue start 
-b:
-a:
+longUptr:
+    .allocate #2
+intUptr:
+    .allocate #2
+bl:
+    .allocate #1
+lnglng:
+    .integer #34
+    .integer #0
+    .integer #0
+    .integer #0
+    .integer #0
+    .integer #0
+    .integer #0
+    .integer #0
+lng:
+    .integer #12
+    .integer #0
+    .integer #0
+    .integer #0
+integer:
+    .integer #10
+    .integer #0
+chr:
+    .integer #2
+shrt:
+    .integer #1
+    .integer #0

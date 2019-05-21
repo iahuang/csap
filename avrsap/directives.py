@@ -1,4 +1,5 @@
 from .sap import SAPSegment
+from .avr import meta
 import struct
 
 def intvalue(size, value):
@@ -20,8 +21,9 @@ def intvalue(size, value):
 
     return seg
 
-def translate_directive(directive):
+def translate_directive(directive, comment_unused=False):
     header = SAPSegment()
+    main = SAPSegment()
 
     name = directive.name
 
@@ -29,7 +31,20 @@ def translate_directive(directive):
         lbl = directive.args[0]
         size = directive.args[1]
 
-        header.write_label(lbl)
-        header.write_directive("allocate", "#"+size)
-    
-    return SAPSegment(), header
+        main.write_label(lbl)
+        main.write_directive("allocate", "#"+size)
+    elif name == "word":
+        size = meta.wordsize
+        value = int(directive.args[0])
+        
+        main.write_seg(intvalue(size, value))
+    elif name == "byte":
+        main.write_directive("integer", "#"+directive.args[0])
+    elif name == "zero":
+        size = directive.args[0]
+        
+        main.write_directive("allocate", "#"+size)
+    else:
+        if comment_unused: main.write_comment("[AVR] "+directive.raw)
+        
+    return main, header
