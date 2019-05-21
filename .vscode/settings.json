@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.html": "html",
+        "*.txt": "simpleassembly",
+        "stdio.h": "c"
+    }
+}
