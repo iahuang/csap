@@ -1,3 +1,5 @@
+sum:
+    .allocate #2
 main:
     ; [GCC]  prologue: function 
     ; [GCC]  frame size = 0 

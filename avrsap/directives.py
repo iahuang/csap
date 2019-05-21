@@ -29,6 +29,7 @@ def translate_directive(directive):
         lbl = directive.args[0]
         size = directive.args[1]
 
+        header.write_label(lbl)
         header.write_directive("allocate", "#"+size)
     
-    return SAPSegment()
+    return SAPSegment(), header

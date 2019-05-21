@@ -4,6 +4,15 @@ from .util import rcut, lcut, parse_dsv
 def split_spaces(text):
     return parse_dsv(text, [" "])[::2]
 
+def grouped_replace(text, query, to):
+    parts = parse_dsv(text, [query])
+
+    for i, part in enumerate(parts):
+        if part == query:
+            parts[i] = to
+
+    return "".join(parts)
+
 def detect_linetype(line):
     line = line.strip()
 
@@ -25,6 +34,8 @@ def parse_avr(asm):
 
     for linetext in asm.split("\n"):
         linetext = linetext.strip()
+        linetext = grouped_replace(linetext, "\t", " ")
+        
         ltype = detect_linetype(linetext)
         line = None
         if ltype == "directive":
@@ -40,14 +51,7 @@ def parse_avr(asm):
             lines.append(line)
     
     return lines
-    
 
-class Directive:
-    def __init__(self, line):
-        self.raw = line
-        parts = split_spaces(line)
-        self.name = parts[0].lstrip(".")
-        self.args = parts[1:]
 
 class Label:
     def __init__(self, line):
@@ -61,10 +65,14 @@ class Comment:
 
 class Instruction:
     def __init__(self, line):
+        self.name = line.split(" ")[0]
+        self.args = parse_dsv(lcut(line, self.name+" "), [","])[::2]
+        self.args = list([arg.strip() for arg in self.args])
+
+class Directive(Instruction):
+    def __init__(self, line):
         self.raw = line
-        parts = split_spaces(line)
-        self.mne = parts[0]
-        self.args = list([Token(arg) for arg in parts[1:] ])
+        super().__init__(line.lstrip("."))
 
 class Token:
     def __init__(self, text):

@@ -4,11 +4,12 @@ from .sap import SAPSegment
 
 from .directives import translate_directive
 
+
 class Translator:
     def __init__(self):
         self.header = SAPSegment()
         self.main = SAPSegment()
-    
+
     def process(self, text):
         syntax = parse_avr(text)
 
@@ -17,7 +18,9 @@ class Translator:
 
         for line in syntax:
             if isinstance(line, Directive):
-                main.write_seg(translate_directive(line))
+                seg, headseg = translate_directive(line)
+                main.write_seg(seg)
+                header.write_seg(headseg)
             elif isinstance(line, Comment):
                 main.write_comment("[GCC] "+line.text)
             elif isinstance(line, Label):
@@ -25,19 +28,19 @@ class Translator:
 
         self.header = header
         self.main = main
-    
+
     def build_segment(self, seg):
         output = ""
 
         for line in seg.lines:
-            output+=line.to_string()+"\n"
+            output += line.to_string()+"\n"
         return output
-    
+
     def to_sap(self, text):
         self.process(text)
         output = ""
 
-        output+=self.build_segment(self.header)
-        output+=self.build_segment(self.main)
-        
+        output += self.build_segment(self.header)
+        output += self.build_segment(self.main)
+
         return output
