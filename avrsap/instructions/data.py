@@ -1,13 +1,6 @@
-from ..sap import SAPSegment
-from ..addressing import token_to_ptr, token_to_value
-from .tools import load_args
+from .general import Instruction, StatusFlags
 
-def lds(args):
-    seg = SAPSegment()
-    load_args(seg, args)
-
-    seg.write_inst("movrx","r2","r1")
-
-    return seg
-    
-
+class lds(Instruction):
+    def on_run(self):
+        self.load_args()
+        self.seg.write_inst("movrx","r2","r1")

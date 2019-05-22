@@ -1,4 +1,3 @@
-from ..sap import SAPSegment
 from .general import Instruction, StatusFlags
 
 class add(Instruction):

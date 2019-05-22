@@ -137,10 +137,32 @@ main:
     ; [GCC]  prologue: function 
     ; [GCC]  frame size = 0 
     ; [GCC]  stack size = 0 
-    ; [CSAP] Unsupported instruction lds
-    ; [CSAP] Unsupported instruction lds
-    ; [CSAP] Unsupported instruction lds
-    ; [CSAP] Unsupported instruction lds
+    ; lds r24 a
+    movar registers r1
+    addir #24 r1
+    movar a r2
+    movxr r2 r2
+    movrx r2 r1
+    ; lds r25 a+1
+    movar registers r1
+    addir #25 r1
+    movar a r2
+    addir #1 r2
+    movxr r2 r2
+    movrx r2 r1
+    ; lds r18 b
+    movar registers r1
+    addir #18 r1
+    movar b r2
+    movxr r2 r2
+    movrx r2 r1
+    ; lds r19 b+1
+    movar registers r1
+    addir #19 r1
+    movar b r2
+    addir #1 r2
+    movxr r2 r2
+    movrx r2 r1
     ; add r24 r18
     movar registers r1
     addir #24 r1

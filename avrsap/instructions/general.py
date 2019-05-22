@@ -9,10 +9,11 @@ class StatusFlags:
 
     _flagsize = 3
     all = 2**_flagsize
+    none = 0
     numeric = CARRY | ZERO | NEG
 
 class Instruction:
-    def __init__(self, flags):
+    def __init__(self, flags=StatusFlags.none):
         self.flags = flags
         self.shouldsetflags = False
 

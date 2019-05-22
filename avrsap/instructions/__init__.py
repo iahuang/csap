@@ -1,10 +1,11 @@
 from ..sap import SAPSegment
 from ..addressing import token_to_ptr, token_to_value
 from . import arithmetic
-from .data import *
+from . import data
 
 instruction_set = (
     arithmetic.add,
+    data.lds
 )
 
 class InstructionRegistry:
