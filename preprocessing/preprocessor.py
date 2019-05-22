@@ -50,8 +50,13 @@ def fix_empty_labels(_lines):
             skip = False
             continue
         if re.search(':(\s+)?$', line):
-            lines.append(line.rstrip()+" "+_lines[i+1].strip())
-            skip = True
+            nextline = _lines[i+1].strip()
+            if nextline.startswith(";") or nextline.endswith(":"):
+                lines.append(line+" nop")
+            else:
+                lines.append(line.rstrip()+" "+nextline)
+                skip = True
+                
         else:
             lines.append(line)
     return lines
@@ -65,14 +70,16 @@ class Preprocessor:
     def __init__(self):
         self.ext = {}
 
-    def load_extension(self, json_data):
+    def load_extension(self, path):
+        with open(path) as fl:
+            json_data = fl.read()
+
         extension = json.loads(json_data)
         for header in extension:
             self.ext[header] = extension[header]
 
     def preprocess(self, src):
         lines = src.split("\n")
-        lines = compress(lines)
         lines = apply_macro(AssignMacro, lines)
         lines = apply_macro(CallMacro, lines)
         lines = apply_macro(PrintMacro, lines)

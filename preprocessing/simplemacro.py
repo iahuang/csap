@@ -1,3 +1,5 @@
+from .macros import SAPMacro
+
 def simple_macro_runner(insertion, argnames, args):
     insertion = insertion[:]
     for i, line in enumerate(insertion):

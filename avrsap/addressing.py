@@ -10,8 +10,8 @@ def token_to_ptr(token, reg_num):
         seg.write_inst("addir", f"#{token.reg_num}", reg)
     elif token.type == "memory":
         parts = parse_dsv(token.text, ["+", "-"])
-
-        seg.write_inst("movar", token.text, reg)
+        label = parts[0]
+        seg.write_inst("movar", label, reg)
         if len(parts) != 1:
             op = parts[1]
             offset = parts[2]
@@ -26,11 +26,11 @@ def token_to_ptr(token, reg_num):
     else:
         print("Invalid addressing mode: pointer to",token.type)
         exit()
-    
+
     return seg
 
 def token_to_value(token, reg_num):
-    seg = token_to_ptr(token, reg_num)
+    seg = SAPSegment()
     reg = "r"+str(reg_num)
     if token.type == "register":
         seg.write_inst("movar", "registers", reg)

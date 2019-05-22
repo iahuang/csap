@@ -22,7 +22,6 @@ class SAPLine:
         elif self.type == "raw":
             return indent+self.name
 
-
 class SAPSegment:
     def __init__(self):
         self.lines = []
@@ -56,3 +55,6 @@ class SAPSegment:
     
     def get_first(self):
         return self.lines[0]
+    
+    def __str__(self):
+        return "<SAP Program Segment> {\n"+"\n".join([line.to_string() for line in self.lines])+"\n}"
