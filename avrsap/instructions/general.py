@@ -46,6 +46,11 @@ class Instruction:
 
         self.seg.write_seg(funcs[t1](self.args[0], 1))
         self.seg.write_seg(funcs[t2](self.args[1], 2))
+    
+    def load_arg(self, t="ptr", n=1):
+        funcs = {"ptr":token_to_ptr,"value":token_to_value}
+
+        self.seg.write_seg(funcs[t](self.args[n-1], n))
 
 def set_zero(seg, reg):
     seg.write_lines([
