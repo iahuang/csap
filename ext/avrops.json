@@ -1,0 +1,7 @@
+{
+    "setareg areg sreg":[
+        "push r0",
+        "movar registers r1",
+        "addir #$areg r1"
+    ]
+}

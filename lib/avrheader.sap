@@ -2,6 +2,11 @@
 
 registers: .allocate #32
 
+overflow: .integer #0
+negative: .integer #0
+zero: .integer #0
+carry: .integer #0
+
 tobinary:
     ; r1 is the value
     ; r2 is the pointer to the bytedump
@@ -127,4 +132,4 @@ andnoset:
     jmpne anditer
 
     ret
-    
+

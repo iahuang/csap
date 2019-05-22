@@ -1,4 +1,5 @@
 import re
+from .util import rcut, lcut
 from .arguments import arg_to_register
 
 def compare_args(a, b):

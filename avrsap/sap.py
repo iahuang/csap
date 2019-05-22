@@ -1,7 +1,7 @@
 import requests._internal_utils
 
 def clean_label(label):
-    return label.replace("$","D").replace("_","U").replace(".","A")
+    return label.replace("$","D").replace("_","U").replace(".","A").replace("(","LP").replace(")","RP").replace(" ","S").replace(",","C")
 
 class SAPLine:
     def __init__(self, type, name, *args):

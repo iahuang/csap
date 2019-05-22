@@ -25,7 +25,7 @@ if __name__ == "__main__":
         fl.write(sap)
 
     proc = Preprocessor()
-    proc.load_extension("lib/sapplus.json")
+    proc.load_extension("ext/sapplus.json")
 
     sap = proc.preprocess(sap)
 
