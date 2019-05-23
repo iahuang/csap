@@ -29,11 +29,11 @@ class Instruction:
         return seg
     
     def setflags(self, value_register, force=False):
+        if self.flags & StatusFlags.CARRY: # Always apply carry, because it can't be realistically optimized out
+            set_carry(self.seg, value_register)
+
         if not self.shouldsetflags and not force:
             return
-
-        if self.flags & StatusFlags.CARRY:
-            set_carry(self.seg, value_register)
 
         if self.flags & StatusFlags.NEG:
             set_neg(self.seg, value_register)

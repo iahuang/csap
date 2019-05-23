@@ -2,10 +2,16 @@ from ..sap import SAPSegment
 from ..addressing import token_to_ptr, token_to_value
 from . import arithmetic
 from . import data
+from . import controlflow
 
 instruction_set = (
+    arithmetic.adc,
     arithmetic.add,
-    data.lds
+    data.ldi,
+    data.lds,
+    data.sts,
+    controlflow.rcall,
+    controlflow.ret
 )
 
 class InstructionRegistry:
@@ -33,7 +39,7 @@ def translate_instruction(mne, args):
     
     if InstructionRegistry.contains(mne):
         inst = InstructionRegistry.get(mne)
-        seg.write_seg(inst.run(args, setflags=True))
+        seg.write_seg(inst.run(args, setflags=False))
     else:
         seg = SAPSegment()
         seg.write_comment("[CSAP] Unsupported instruction "+mne)

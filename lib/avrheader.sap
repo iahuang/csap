@@ -1,4 +1,4 @@
-.start main
+.start avrinit
 
 registers: .allocate #32
 
@@ -6,6 +6,12 @@ overflow: .integer #0
 negative: .integer #0
 zero: .integer #0
 carry: .integer #0
+
+stackptr: .integer #0
+
+labelnull:
+    println "Jumped to null label, halting"
+    halt
 
 tobinary:
     ; r1 is the value
@@ -132,4 +138,25 @@ andnoset:
     jmpne anditer
 
     ret
+
+avrpush:
+    ; r1 value
+    addim #1 stackptr
+    movmr stackptr r4
+    movrx r1 r4
+    ret
+
+avrpop:
+    movmr stackptr r4
+    movxr r4 r0
+    subim #1 stackptr
+    ret
+
+avrret:
+    ; Uses code manipulation to jump to a custom location
+    call avrpop
+    movar retval r4
+    addir #1 r4
+    movrx r0 r4
+retval: jmp labelnull
 

@@ -1,4 +1,4 @@
-.start main
+.start avrinit
 
 registers: .allocate #32
 
@@ -6,6 +6,12 @@ overflow: .integer #0
 negative: .integer #0
 zero: .integer #0
 carry: .integer #0
+
+stackptr: .integer #0
+
+labelnull:
+    println "Jumped to null label, halting"
+    halt
 
 tobinary:
     ; r1 is the value
@@ -133,6 +139,37 @@ andnoset:
 
     ret
 
+avrpush:
+    ; r1 value
+    addim #1 stackptr
+    movmr stackptr r4
+    movrx r1 r4
+    ret
+
+avrpop:
+    movmr stackptr r4
+    movxr r4 r0
+    subim #1 stackptr
+    ret
+
+avrret:
+    ; Uses code manipulation to jump to a custom location
+    call avrpop
+    movar retval r4
+    addir #1 r4
+    movrx r0 r4
+retval: jmp labelnull
+
+avrinit:
+    movar programEnd r1
+    movrm r1 stackptr
+    push r2
+    movar initCheckpoint r2
+    addir #2 r2
+    call avrpush r2
+    pop r2
+    initCheckpoint: jmp main
+    halt 
 main:
     ; [GCC]  prologue: function 
     ; [GCC]  frame size = 0 
@@ -176,31 +213,50 @@ main:
     else
     movim #0 carry
     endif
-    if r3 > #127
-    movim #1 negative
-    else
-    if r3 < #0
-    mulir #-1 r3
-    addir #128 r3
-    movim #1 negative
-    else
-    movim #0 negative
-    endif
-    endif
-    if r3 == #0
-    movim #1 zero
-    else
-    movim #0 zero
-    endif
     addrr r2 r3
     movrx r3 r1
-    ; [CSAP] Unsupported instruction adc
-    ; [CSAP] Unsupported instruction sts
-    ; [CSAP] Unsupported instruction sts
-    ; [CSAP] Unsupported instruction ldi
-    ; [CSAP] Unsupported instruction ldi
+    ; adc r25 r19
+    movar registers r1
+    addir #25 r1
+    movar registers r2
+    addir #19 r2
+    movxr r2 r2
+    movxr r1 r3
+    if r3 > #255
+    movir #255 r3
+    movim #1 carry
+    else
+    movim #0 carry
+    endif
+    addrr r2 r3
+    addmr carry r3
+    movrx r3 r1
+    ; sts sum+1 r25
+    movar sum r1
+    addir #1 r1
+    movar registers r2
+    addir #25 r2
+    movxr r2 r2
+    movrx r2 r1
+    ; sts sum r24
+    movar sum r1
+    movar registers r2
+    addir #24 r2
+    movxr r2 r2
+    movrx r2 r1
+    ; ldi r25 0
+    movar registers r1
+    addir #25 r1
+    movir #0 r2
+    movrx r2 r1
+    ; ldi r24 0
+    movar registers r1
+    addir #24 r1
+    movir #0 r2
+    movrx r2 r1
     ; [GCC]  epilogue start 
-    ; [CSAP] Unsupported instruction ret
+    ; ret ret
+    call avrret
 sum:
     .allocate #2
 b:
@@ -208,4 +264,6 @@ b:
     .integer #0
 a:
     .integer #1
+    .integer #0
+programEnd:
     .integer #0

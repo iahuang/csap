@@ -1,4 +1,5 @@
 from .arguments import arg_to_register
+from .util import parse_dsv
 import re
 
 class SAPMacro:

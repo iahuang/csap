@@ -1,7 +1,8 @@
 {
     "setareg areg sreg":[
-        "push r0",
+        "push r9",
         "movar registers r1",
-        "addir #$areg r1"
+        "addir #$areg r1",
+        "movxr "
     ]
 }

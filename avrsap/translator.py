@@ -7,22 +7,40 @@ from .instructions import translate_instruction
 
 
 class Translator:
-    def __init__(self, header):
-        self.header = SAPSegment()
+    def __init__(self, header, stack_size=100):
+        self.avrinit = SAPSegment()
         self.avrheader = header
         self.main = SAPSegment()
+        self.stack_size = stack_size
 
     def process(self, text):
         syntax = parse_avr(text)
 
-        header = SAPSegment()
+        avrinit = SAPSegment()
+
+        avrinit.write_label("avrinit")
+
+        # Initialize stack pointer
+        avrinit.write_inst("movar", "programEnd", "r1")
+        avrinit.write_inst("movrm", "r1", "stackptr")
+
+        # Code for the initial call to main
+        avrinit.write_lines([
+            "push r2",
+            "movar initCheckpoint r2",
+            "addir #2 r2",
+            "call avrpush r2",
+            "pop r2",
+            "initCheckpoint: jmp main"
+        ])
+
         main = SAPSegment()
 
         for line in syntax:
             if isinstance(line, Directive):
                 seg, headseg = translate_directive(line)
                 main.write_seg(seg)
-                header.write_seg(headseg)
+                avrinit.write_seg(headseg)
             elif isinstance(line, Comment):
                 main.write_comment("[GCC] "+line.text)
             elif isinstance(line, Label):
@@ -31,8 +49,12 @@ class Translator:
                 mne = line.name
                 args = line.args
                 main.write_seg(translate_instruction(mne, args))
-                
-        self.header = header
+        
+        avrinit.write_inst("halt")
+        self.avrinit = avrinit
+
+        main.write_label("programEnd")
+        main.write_directive("integer", "#0")
         self.main = main
 
     def build_segment(self, seg):
@@ -46,7 +68,7 @@ class Translator:
         self.process(text)
         output = ""
 
-        output += self.build_segment(self.header)
+        output += self.build_segment(self.avrinit)
         output += self.build_segment(self.main)
 
         return self.avrheader+output
